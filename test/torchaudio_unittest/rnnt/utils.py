@@ -87,8 +87,7 @@ def get_B1_T10_U3_D4_data(
     nan=False,
 ):
     B, T, U, D = 2, 10, 3, 4
-    data = {}
-    data["logits"] = np.random.rand(B, T, U, D).astype(dtype)
+    data = {"logits": np.random.rand(B, T, U, D).astype(dtype)}
     if not random:
         data["logits"].fill(0.1)
     if nan:

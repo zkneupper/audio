@@ -59,40 +59,42 @@ def batch_SDR_torch(estimation, origin, mask=None):
     
     batch_size_est, nsource_est, nsample_est = estimation.size()
     batch_size_ori, nsource_ori, nsample_ori = origin.size()
-    
+
     assert batch_size_est == batch_size_ori, "Estimation and original sources should have same shape."
     assert nsource_est == nsource_ori, "Estimation and original sources should have same shape."
     assert nsample_est == nsample_ori, "Estimation and original sources should have same shape."
-    
+
     assert nsource_est < nsample_est, "Axis 1 should be the number of sources, and axis 2 should be the signal."
-    
+
     batch_size = batch_size_est
     nsource = nsource_est
     nsample = nsample_est
-    
+
     # zero mean signals
     estimation = estimation - torch.mean(estimation, 2, keepdim=True).expand_as(estimation)
     origin = origin - torch.mean(origin, 2, keepdim=True).expand_as(estimation)
-    
+
     # possible permutations
     perm = list(set(permutations(np.arange(nsource))))
-    
+
     # pair-wise SDR
     SDR = torch.zeros((batch_size, nsource, nsource)).type(estimation.type())
     for i in range(nsource):
         for j in range(nsource):
             SDR[:,i,j] = calc_sdr_torch(estimation[:,i], origin[:,j], mask)
-    
+
     # choose the best permutation
     SDR_max = []
     SDR_perm = []
     for permute in perm:
-        sdr = []
-        for idx in range(len(permute)):
-            sdr.append(SDR[:,idx,permute[idx]].view(batch_size,-1))
+        sdr = [
+            SDR[:, idx, permute[idx]].view(batch_size, -1)
+            for idx in range(len(permute))
+        ]
+
         sdr = torch.sum(torch.cat(sdr, 1), 1)
         SDR_perm.append(sdr.view(batch_size, 1))
     SDR_perm = torch.cat(SDR_perm, 1)
     SDR_max, _ = torch.max(SDR_perm, dim=1)
-    
+
     return SDR_max / nsource

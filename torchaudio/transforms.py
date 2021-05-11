@@ -504,8 +504,7 @@ class MelSpectrogram(torch.nn.Module):
             Tensor: Mel frequency spectrogram of size (..., ``n_mels``, time).
         """
         specgram = self.spectrogram(waveform)
-        mel_specgram = self.mel_scale(specgram)
-        return mel_specgram
+        return self.mel_scale(specgram)
 
 
 class MFCC(torch.nn.Module):
@@ -988,9 +987,13 @@ class SlidingWindowCmn(torch.nn.Module):
         Returns:
             Tensor: Tensor of audio of dimension (..., time).
         """
-        cmn_waveform = F.sliding_window_cmn(
-            waveform, self.cmn_window, self.min_cmn_window, self.center, self.norm_vars)
-        return cmn_waveform
+        return F.sliding_window_cmn(
+            waveform,
+            self.cmn_window,
+            self.min_cmn_window,
+            self.center,
+            self.norm_vars,
+        )
 
 
 class Vad(torch.nn.Module):

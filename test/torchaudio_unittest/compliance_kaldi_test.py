@@ -14,10 +14,8 @@ def extract_window(window, wave, f, frame_length, frame_shift, snip_edges):
     def first_sample_of_frame(frame, window_size, window_shift, snip_edges):
         if snip_edges:
             return frame * window_shift
-        else:
-            midpoint_of_frame = frame * window_shift + window_shift // 2
-            beginning_of_frame = midpoint_of_frame - window_size // 2
-            return beginning_of_frame
+        midpoint_of_frame = frame * window_shift + window_shift // 2
+        return midpoint_of_frame - window_size // 2
 
     sample_offset = 0
     num_samples = sample_offset + wave.size(0)
@@ -98,7 +96,7 @@ class Test_Kaldi(common_utils.TempDirMixin, common_utils.TorchaudioTestCase):
         for num_samples in range(1, 20):
             for window_size in range(1, num_samples + 1):
                 for window_shift in range(1, 2 * num_samples + 1):
-                    for snip_edges in range(0, 2):
+                    for snip_edges in range(2):
                         self._test_get_strided_helper(num_samples, window_size, window_shift, snip_edges)
 
     def _create_data_set(self):
@@ -177,8 +175,7 @@ class Test_Kaldi(common_utils.TempDirMixin, common_utils.TorchaudioTestCase):
 
     def test_resample_waveform(self):
         def get_output_fn(sound, args):
-            output = kaldi.resample_waveform(sound.to(torch.float32), args[1], args[2])
-            return output
+            return kaldi.resample_waveform(sound.to(torch.float32), args[1], args[2])
 
         self._compliance_test_helper(self.test2_filepath, 'resample', 32, 3, get_output_fn, atol=1e-2, rtol=1e-5)
 

@@ -50,12 +50,11 @@ class YESNO(Dataset):
         archive = root / archive
 
         self._path = root / folder_in_archive
-        if download:
-            if not os.path.isdir(self._path):
-                if not os.path.isfile(archive):
-                    checksum = _RELEASE_CONFIGS["release1"]["checksum"]
-                    download_url(url, root, hash_value=checksum)
-                extract_archive(archive)
+        if download and not os.path.isdir(self._path):
+            if not os.path.isfile(archive):
+                checksum = _RELEASE_CONFIGS["release1"]["checksum"]
+                download_url(url, root, hash_value=checksum)
+            extract_archive(archive)
 
         if not os.path.isdir(self._path):
             raise RuntimeError(
@@ -80,8 +79,7 @@ class YESNO(Dataset):
             tuple: ``(waveform, sample_rate, labels)``
         """
         fileid = self._walker[n]
-        item = self._load_item(fileid, self._path)
-        return item
+        return self._load_item(fileid, self._path)
 
     def __len__(self) -> int:
         return len(self._walker)

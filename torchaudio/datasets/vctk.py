@@ -185,12 +185,11 @@ class VCTK_092(Dataset):
         self._mic_id = mic_id
         self._audio_ext = audio_ext
 
-        if download:
-            if not os.path.isdir(self._path):
-                if not os.path.isfile(archive):
-                    checksum = _CHECKSUMS.get(url, None)
-                    download_url(url, root, hash_value=checksum, hash_type="md5")
-                extract_archive(archive, self._path)
+        if download and not os.path.isdir(self._path):
+            if not os.path.isfile(archive):
+                checksum = _CHECKSUMS.get(url, None)
+                download_url(url, root, hash_value=checksum, hash_type="md5")
+            extract_archive(archive, self._path)
 
         if not os.path.isdir(self._path):
             raise RuntimeError(

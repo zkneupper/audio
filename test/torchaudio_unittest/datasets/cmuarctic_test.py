@@ -17,9 +17,6 @@ def get_mock_dataset(root_dir):
     root_dir: directory to the mocked dataset
     """
     mocked_data = []
-    sample_rate = 16000
-    utterance = "This is a test utterance."
-
     base_dir = os.path.join(root_dir, "ARCTIC", "cmu_us_aew_arctic")
     txt_dir = os.path.join(base_dir, "etc")
     os.makedirs(txt_dir, exist_ok=True)
@@ -27,8 +24,11 @@ def get_mock_dataset(root_dir):
     audio_dir = os.path.join(base_dir, "wav")
     os.makedirs(audio_dir, exist_ok=True)
 
-    seed = 42
     with open(txt_file, "w") as txt:
+        sample_rate = 16000
+        utterance = "This is a test utterance."
+
+        seed = 42
         for c in ["a", "b"]:
             for i in range(5):
                 utterance_id = f"arctic_{c}{i:04d}"

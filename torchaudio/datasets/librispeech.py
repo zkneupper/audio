@@ -117,12 +117,11 @@ class LIBRISPEECH(Dataset):
 
         self._path = os.path.join(root, folder_in_archive)
 
-        if download:
-            if not os.path.isdir(self._path):
-                if not os.path.isfile(archive):
-                    checksum = _CHECKSUMS.get(url, None)
-                    download_url(url, root, hash_value=checksum)
-                extract_archive(archive)
+        if download and not os.path.isdir(self._path):
+            if not os.path.isfile(archive):
+                checksum = _CHECKSUMS.get(url, None)
+                download_url(url, root, hash_value=checksum)
+            extract_archive(archive)
 
         self._walker = sorted(str(p.stem) for p in Path(self._path).glob('*/*/*' + self._ext_audio))
 

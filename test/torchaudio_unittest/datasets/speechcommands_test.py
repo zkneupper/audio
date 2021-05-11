@@ -58,11 +58,11 @@ def get_mock_dataset(dataset_dir):
     mocked_valid_samples = []
     mocked_test_samples = []
     os.makedirs(dataset_dir, exist_ok=True)
-    sample_rate = 16000  # 16kHz sample rate
-    seed = 0
     valid_file = os.path.join(dataset_dir, "validation_list.txt")
     test_file = os.path.join(dataset_dir, "testing_list.txt")
     with open(valid_file, "w") as valid, open(test_file, "w") as test:
+        sample_rate = 16000  # 16kHz sample rate
+        seed = 0
         for label in _LABELS:
             path = os.path.join(dataset_dir, label)
             os.makedirs(path, exist_ok=True)

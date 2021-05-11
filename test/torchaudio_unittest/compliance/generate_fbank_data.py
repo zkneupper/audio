@@ -97,7 +97,11 @@ def decode(fn, sound_path, exe_path, scp_path, out_dir):
     inputs = {arr[i]: utils.parse(fn_split[i]) for i in range(len(arr))}
 
     # print flags for C++
-    s = ' '.join(['--' + arr[i].replace('_', '-') + '=' + fn_split[i] for i in range(len(arr))])
+    s = ' '.join(
+        '--' + arr[i].replace('_', '-') + '=' + fn_split[i]
+        for i in range(len(arr))
+    )
+
     logging.info(exe_path + ' --dither=0.0 --debug-mel=true ' + s + ' ' + scp_path + ' ' + out_fn)
     logging.info()
     # print args for python

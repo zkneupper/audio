@@ -45,11 +45,7 @@ def get_wav_data(
     dtype_ = getattr(torch, dtype)
 
     if num_frames is None:
-        if dtype == 'uint8':
-            num_frames = 256
-        else:
-            num_frames = 1 << 16
-
+        num_frames = 256 if dtype == 'uint8' else 1 << 16
     if dtype == 'uint8':
         base = torch.linspace(0, 255, num_frames, dtype=dtype_)
     elif dtype == 'int8':

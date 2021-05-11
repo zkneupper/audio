@@ -303,12 +303,11 @@ def biquad(
     a1 = torch.as_tensor(a1, dtype=dtype, device=device).view(1)
     a2 = torch.as_tensor(a2, dtype=dtype, device=device).view(1)
 
-    output_waveform = lfilter(
+    return lfilter(
         waveform,
         torch.cat([a0, a1, a2]),
         torch.cat([b0, b1, b2]),
     )
-    return output_waveform
 
 
 def contrast(waveform: Tensor, enhancement_amount: float = 75.0) -> Tensor:
@@ -335,9 +334,7 @@ def contrast(waveform: Tensor, enhancement_amount: float = 75.0) -> Tensor:
 
     temp1 = waveform * (math.pi / 2)
     temp2 = contrast * torch.sin(temp1 * 4)
-    output_waveform = torch.sin(temp1 + temp2)
-
-    return output_waveform
+    return torch.sin(temp1 + temp2)
 
 
 def dcshift(
@@ -710,11 +707,7 @@ def flanger(
 
     n_channels = waveform.shape[-2]
 
-    if modulation == "sinusoidal":
-        wave_type = "SINE"
-    else:
-        wave_type = "TRIANGLE"
-
+    wave_type = "SINE" if modulation == "sinusoidal" else "TRIANGLE"
     # Balance output:
     in_gain = 1.0 / (1 + delay_gain)
     delay_gain = delay_gain / (1 + delay_gain)
@@ -723,7 +716,7 @@ def flanger(
     delay_gain = delay_gain * (1 - abs(feedback_gain))
 
     delay_buf_length = int((delay_min + delay_depth) * sample_rate + 0.5)
-    delay_buf_length = delay_buf_length + 2
+    delay_buf_length += 2
 
     delay_bufs = torch.zeros(
         waveform.shape[0], n_channels, delay_buf_length, dtype=dtype, device=device
@@ -911,8 +904,7 @@ def _lfilter_core(
     else:
         _lfilter_core_generic_loop(input_signal_windows, a_coeffs_flipped, padded_output_waveform)
 
-    output = padded_output_waveform[:, n_order - 1:]
-    return output
+    return padded_output_waveform[:, n_order - 1:]
 
 try:
     _lfilter = torch.ops.torchaudio._lfilter
@@ -1036,7 +1028,7 @@ def overdrive(waveform: Tensor, gain: float = 20, colour: float = 20) -> Tensor:
     waveform = waveform.view(-1, actual_shape[-1])
 
     gain = _dB2Linear(gain)
-    colour = colour / 200
+    colour /= 200
     last_in = torch.zeros(waveform.shape[:-1], dtype=dtype, device=device)
     last_out = torch.zeros(waveform.shape[:-1], dtype=dtype, device=device)
 
@@ -1113,11 +1105,7 @@ def phaser(
 
     mod_buf_len = int(sample_rate / mod_speed + 0.5)
 
-    if sinusoidal:
-        wave_type = "SINE"
-    else:
-        wave_type = "TRIANGLE"
-
+    wave_type = "SINE" if sinusoidal else "TRIANGLE"
     mod_buf = _generate_wave_table(
         wave_type=wave_type,
         data_type="INT",

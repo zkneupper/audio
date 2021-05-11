@@ -736,7 +736,7 @@ def mask_along_axis_iid(
         Tensor: Masked spectrograms of dimensions (batch, channel, freq, time)
     """
 
-    if axis != 2 and axis != 3:
+    if axis not in [2, 3]:
         raise ValueError('Only Frequency and Time masking are supported')
 
     device = specgrams.device
@@ -778,7 +778,7 @@ def mask_along_axis(
     Returns:
         Tensor: Masked spectrogram of dimensions (channel, freq, time)
     """
-    if axis != 1 and axis != 2:
+    if axis not in [1, 2]:
         raise ValueError('Only Frequency and Time masking are supported')
 
     # pack batch
@@ -904,9 +904,7 @@ def _compute_nccf(
 
         output_lag.append(output_frames.unsqueeze(-1))
 
-    nccf = torch.cat(output_lag, -1)
-
-    return nccf
+    return torch.cat(output_lag, -1)
 
 
 def _combine_max(
@@ -1066,14 +1064,12 @@ def sliding_window_cmn(
         if window_start < 0:
             window_end -= window_start
             window_start = 0
-        if not center:
-            if window_end > t:
-                window_end = max(t + 1, min_cmn_window)
+        if not center and window_end > t:
+            window_end = max(t + 1, min_cmn_window)
         if window_end > num_frames:
             window_start -= (window_end - num_frames)
             window_end = num_frames
-            if window_start < 0:
-                window_start = 0
+            window_start = max(window_start, 0)
         if last_window_start == -1:
             input_part = specgram[:, window_start: window_end - window_start, :]
             cur_sum += torch.sum(input_part, 1)
@@ -1390,8 +1386,8 @@ def resample(
     orig_freq = int(orig_freq)
     new_freq = int(new_freq)
     gcd = math.gcd(orig_freq, new_freq)
-    orig_freq = orig_freq // gcd
-    new_freq = new_freq // gcd
+    orig_freq //= gcd
+    new_freq //= gcd
 
     kernel, width = _get_sinc_resample_kernel(orig_freq, new_freq, lowpass_filter_width,
                                               rolloff, waveform.device, waveform.dtype)

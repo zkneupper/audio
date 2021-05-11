@@ -167,8 +167,7 @@ def parse_args():
         "--normalization", default=True, action="store_true", help="if True, spectrogram is normalized",
     )
 
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch):
