@@ -74,10 +74,7 @@ class ConvBlock(torch.nn.Module):
         self, input: torch.Tensor
     ) -> Tuple[Optional[torch.Tensor], torch.Tensor]:
         feature = self.conv_layers(input)
-        if self.res_out is None:
-            residual = None
-        else:
-            residual = self.res_out(feature)
+        residual = None if self.res_out is None else self.res_out(feature)
         skip_out = self.skip_out(feature)
         return residual, skip_out
 
@@ -168,7 +165,7 @@ class MaskGenerator(torch.nn.Module):
             residual, skip = layer(feats)
             if residual is not None:  # the last conv layer does not produce residual
                 feats = feats + residual
-            output = output + skip
+            output += skip
         output = self.output_prelu(output)
         output = self.output_conv(output)
         output = torch.sigmoid(output)

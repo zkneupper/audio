@@ -192,11 +192,14 @@ class SaveTest(SaveTestBase):
         ],
     )
     def test_save_mp3(self, test_mode, bit_rate):
-        if test_mode in ["fileobj", "bytesio"]:
-            if bit_rate is not None and bit_rate < 1:
-                raise unittest.SkipTest(
-                    "mp3 format with variable bit rate is known to "
-                    "not yield the exact same result as sox command.")
+        if (
+            test_mode in ["fileobj", "bytesio"]
+            and bit_rate is not None
+            and bit_rate < 1
+        ):
+            raise unittest.SkipTest(
+                "mp3 format with variable bit rate is known to "
+                "not yield the exact same result as sox command.")
         self.assert_save_consistency(
             "mp3", compression=bit_rate, test_mode=test_mode)
 

@@ -166,7 +166,7 @@ def rnnt_loss(
             False  # softmax needs the original logits value
         )
 
-    cost = _RNNT.apply(
+    return _RNNT.apply(
         logits,
         targets,
         logit_lengths,
@@ -176,7 +176,6 @@ def rnnt_loss(
         fused_log_softmax,
         reuse_logits_for_grads,
     )
-    return cost
 
 
 class RNNTLoss(torch.nn.Module):

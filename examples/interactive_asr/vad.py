@@ -127,9 +127,8 @@ class VoiceActivityDetection:
             ):
                 # Too soon to change
                 return self.silence_mark
-            else:
-                self.silent_count = 0
-                return self.speech_mark
+            self.silent_count = 0
+            return self.speech_mark
         else:
             # Silence detected
             self.min_energy = ((self.silent_count * self.min_energy) + energy) / (
@@ -143,9 +142,8 @@ class VoiceActivityDetection:
             ):
                 # Too soon to change
                 return self.speech_mark
-            else:
-                self.speech_count = 0
-                return self.silence_mark
+            self.speech_count = 0
+            return self.silence_mark
 
 
 class MicrophoneStream:

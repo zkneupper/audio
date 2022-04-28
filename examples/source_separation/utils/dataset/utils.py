@@ -10,12 +10,11 @@ Batch = namedtuple("Batch", ["mix", "src", "mask"])
 
 
 def get_dataset(dataset_type, root_dir, num_speakers, sample_rate):
-    if dataset_type == "wsj0mix":
-        train = wsj0mix.WSJ0Mix(root_dir / "tr", num_speakers, sample_rate)
-        validation = wsj0mix.WSJ0Mix(root_dir / "cv", num_speakers, sample_rate)
-        evaluation = wsj0mix.WSJ0Mix(root_dir / "tt", num_speakers, sample_rate)
-    else:
+    if dataset_type != "wsj0mix":
         raise ValueError(f"Unexpected dataset: {dataset_type}")
+    train = wsj0mix.WSJ0Mix(root_dir / "tr", num_speakers, sample_rate)
+    validation = wsj0mix.WSJ0Mix(root_dir / "cv", num_speakers, sample_rate)
+    evaluation = wsj0mix.WSJ0Mix(root_dir / "tt", num_speakers, sample_rate)
     return train, validation, evaluation
 
 

@@ -107,12 +107,11 @@ class SPEECHCOMMANDS(Dataset):
 
         self._path = os.path.join(root, folder_in_archive)
 
-        if download:
-            if not os.path.isdir(self._path):
-                if not os.path.isfile(archive):
-                    checksum = _CHECKSUMS.get(url, None)
-                    download_url(url, root, hash_value=checksum, hash_type="md5")
-                extract_archive(archive, self._path)
+        if download and not os.path.isdir(self._path):
+            if not os.path.isfile(archive):
+                checksum = _CHECKSUMS.get(url, None)
+                download_url(url, root, hash_value=checksum, hash_type="md5")
+            extract_archive(archive, self._path)
 
         if subset == "validation":
             self._walker = _load_list(self._path, "validation_list.txt")

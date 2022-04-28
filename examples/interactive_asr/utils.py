@@ -90,8 +90,7 @@ def calc_mean_invstddev(feature):
 
 def calcMN(features):
     mean, invstddev = calc_mean_invstddev(features)
-    res = (features - mean) * invstddev
-    return res
+    return (features - mean) * invstddev
 
 
 def transcribe(waveform, args, task, generator, models, sp, tgt_dict):
@@ -138,10 +137,10 @@ def setup_asr(args, logger):
 
     if args.ctc or args.rnnt:
         tgt_dict.add_symbol("<ctc_blank>")
-        if args.ctc:
-            logger.info("| decoding a ctc model")
-        if args.rnnt:
-            logger.info("| decoding a rnnt model")
+    if args.ctc:
+        logger.info("| decoding a ctc model")
+    if args.rnnt:
+        logger.info("| decoding a rnnt model")
 
     # Load ensemble
     logger.info("| loading model(s) from {}".format(args.path))

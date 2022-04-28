@@ -36,19 +36,19 @@ def _parse_args():
 
 
 def _generate(version, output_dir):
-    if version == '0.6.0':
-        import ver_060
-        ver_060.generate(output_dir)
-    else:
+    if version != '0.6.0':
         raise ValueError(f'Unexpected torchaudio version: {version}')
+
+    import ver_060
+    ver_060.generate(output_dir)
 
 
 def _validate(version, input_dir):
-    if version == '0.6.0':
-        import ver_060
-        ver_060.validate(input_dir)
-    else:
+    if version != '0.6.0':
         raise ValueError(f'Unexpected torchaudio version: {version}')
+
+    import ver_060
+    ver_060.validate(input_dir)
 
 
 def _get_obj_dir(base_dir, version):

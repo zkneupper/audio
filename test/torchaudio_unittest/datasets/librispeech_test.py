@@ -52,8 +52,9 @@ def get_mock_dataset(root_dir):
                 path = os.path.join(chapter_path, filename)
 
                 utterance = ' '.join(
-                    [_NUMBERS[x] for x in [speaker_id, chapter_id, utterance_id]]
+                    _NUMBERS[x] for x in [speaker_id, chapter_id, utterance_id]
                 )
+
                 trans_content.append(
                     f'{speaker_id}-{chapter_id}-{utterance_id:04d} {utterance}'
                 )

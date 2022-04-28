@@ -36,12 +36,12 @@ def get_mock_dataset(root_dir):
     archive_dir = os.path.join(base_dir, "wavs")
     os.makedirs(archive_dir, exist_ok=True)
     metadata_path = os.path.join(base_dir, "metadata.csv")
-    sample_rate = 22050
-
     with open(metadata_path, mode="w", newline='') as metadata_file:
         metadata_writer = csv.writer(
             metadata_file, delimiter="|", quoting=csv.QUOTE_NONE
         )
+        sample_rate = 22050
+
         for i, (transcript, normalized_transcript) in enumerate(
                 zip(_TRANSCRIPTS, _NORMALIZED_TRANSCRIPT)
         ):

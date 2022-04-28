@@ -65,17 +65,16 @@ class TEDLIUM(Dataset):
         audio_ext=".sph"
     ) -> None:
         self._ext_audio = audio_ext
-        if release in _RELEASE_CONFIGS.keys():
-            folder_in_archive = _RELEASE_CONFIGS[release]["folder_in_archive"]
-            url = _RELEASE_CONFIGS[release]["url"]
-            subset = subset if subset else _RELEASE_CONFIGS[release]["subset"]
-        else:
+        if release not in _RELEASE_CONFIGS.keys():
             # Raise warning
             raise RuntimeError(
                 "The release {} does not match any of the supported tedlium releases{} ".format(
                     release, _RELEASE_CONFIGS.keys(),
                 )
             )
+        folder_in_archive = _RELEASE_CONFIGS[release]["folder_in_archive"]
+        url = _RELEASE_CONFIGS[release]["url"]
+        subset = subset or _RELEASE_CONFIGS[release]["subset"]
         if subset not in _RELEASE_CONFIGS[release]["supported_subsets"]:
             # Raise warning
             raise RuntimeError(
@@ -96,12 +95,11 @@ class TEDLIUM(Dataset):
         if subset in ["train", "dev", "test"]:
             self._path = os.path.join(self._path, subset)
 
-        if download:
-            if not os.path.isdir(self._path):
-                if not os.path.isfile(archive):
-                    checksum = _RELEASE_CONFIGS[release]["checksum"]
-                    download_url(url, root, hash_value=checksum)
-                extract_archive(archive)
+        if download and not os.path.isdir(self._path):
+            if not os.path.isfile(archive):
+                checksum = _RELEASE_CONFIGS[release]["checksum"]
+                download_url(url, root, hash_value=checksum)
+            extract_archive(archive)
 
         # Create list for all samples
         self._filelist = []
